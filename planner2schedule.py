@@ -61,6 +61,31 @@ wb = openpyxl.load_workbook(planner)
 ws = wb.active
 
 rows = []
+
+# Row with DL designation
+dl = 5
+for row in ws.iter_rows(
+        min_row = dl, max_row = dl,
+        min_col=1, max_col=ws.max_column,
+        values_only=True):
+    dl_row = row
+
+# Merged dl_row
+mdl_row = []
+for c, col_index in zip(dl_row,range(ws.max_column)):
+    val = c
+    if c is None:
+        for crange in ws.merged_cells:
+            clo,rlo,chi,rhi = crange.bounds
+            top_value = ws.cell(rlo,clo).value
+            if (rlo<=dl and dl<=rhi
+                and clo<=col_index and col_index<=chi):
+                val = top_value
+                break
+        # Replace None with blank string
+        val = ""
+    mdl_row.append(val)
+    
 # Specify the 4 rows for the AY we are interested in.
 fall_row = 9
 summer_row = 12
@@ -71,13 +96,13 @@ for row in ws.iter_rows(
         values_only=True):
     rows.append(row)
 
-
+# Keys are instructor names, values are a list of Sections
 instructors = dict()
 
 qtrs = ['fall', 'winter', 'spring', 'summer']
 
 for row, qtr in zip(rows, qtrs):
-    for cell in row:
+    for cell, dl_cell in zip(row, mdl_row):
         if not (cell is None):
             n = cell.find('[')
             m = cell.find(']')
@@ -94,9 +119,15 @@ for row, qtr in zip(rows, qtrs):
                 else:
                     ctitle = ""
 
+                # DL or not?
+                isdl = False
+                if dl_cell.find('DL') > 0:
+                    isdl = True
                 instructors.setdefault(iname, [])
-                add_section(instructors[iname], qtr, cnum, ctitle, False, [])
-                
+                add_section(instructors[iname], qtr, cnum, ctitle, isdl, [])
+
+
+# Print
 for k in instructors.keys():
     print(k, end=": ")
     sections = instructors[k]
@@ -104,7 +135,11 @@ for k in instructors.keys():
         print(qtr, end=": ")
         for s in sections:
             if s.qtr == qtr:
-                print(s.number, end=", ")
+                if s.is_dl:
+                    print(s.number, end="(DL), ")
+                else:
+                    print(s.number, end=", ")                    
+
     print("")
     
                     
