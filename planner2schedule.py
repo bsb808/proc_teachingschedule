@@ -147,7 +147,7 @@ r = 2
 ts.cell(row = r, column = 1,
         value = 'Name')
 ts.cell(row = r, column = 2,
-        value = 'Direct TL')
+        value = 'TL [Direct/Reimburse]').alignment = Alignment(wrap_text = True, horizontal = 'center')
 
 for ii in range(1,5):
     ts.merge_cells(start_row = r, start_column = 2*ii+1,
@@ -205,9 +205,13 @@ for k in keys:
     
     r = maxr + 1
 
+
+# Col width
+ts.row_dimensions[2].height = 30
+
 # Set widths
 ts.column_dimensions['A'].width = 20
-ts.column_dimensions['B'].width = 12
+ts.column_dimensions['B'].width = 17
 
 cs = ['C','D','E','F','G','H','I','J','K']
 for c in cs:
