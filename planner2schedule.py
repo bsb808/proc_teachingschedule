@@ -30,7 +30,7 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric):
             
 
         
-planner='MAE_Planner_AY24.xlsx'
+planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY24.xlsx'
 wb = openpyxl.load_workbook(planner)
 ws = wb.active
 
@@ -244,6 +244,7 @@ for rr in range(2, r):
     
 
 # Save
-tsb.save('teaching_schedule.xlsx')
+datestamp = datetime.now().strftime("%Y%m%d")
+tsb.save('teaching_schedule_%s.xlsx'%datestamp)
 
         
