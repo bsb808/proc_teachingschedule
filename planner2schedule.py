@@ -27,16 +27,16 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric):
         s = Section(qtr, number, title, is_dl, is_async)
         if not is_in_sections(sections, s):
             sections.append(s)
-            
 
-        
-planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY24.xlsx'
+# Open the excel sheet       
+planner = '/Users/brianbingham/Downloads/MAE_Master_Course_Plan_AY24.xlsx'
+#planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY24.xlsx'
 wb = openpyxl.load_workbook(planner)
 ws = wb.active
 
-rows = []
 
-# Row with DL designation
+# Determine which sections are DL
+# Specify the row value that contains "DL" - then read them into a list.
 dl = 5
 for row in ws.iter_rows(
         min_row = dl, max_row = dl,
@@ -62,10 +62,12 @@ for c, col_index in zip(dl_row,range(ws.max_column)):
                 break
     mdl_row.append(val)
     
-# Specify the 4 rows for the AY we are interested in.
+# Specify the four rows for the AY we are interested in.
 fall_row = 9
 summer_row = 12
 
+# Read rows into a list
+rows = []
 for row in ws.iter_rows(
         min_row = fall_row, max_row = summer_row,
         min_col=1, max_col=ws.max_column,
@@ -111,8 +113,7 @@ for row, qtr in zip(rows, qtrs):
                     add_section(instructors[iname], qtr, cnum, ctitle,
                                 isdl, is_async, [])
 
-
-# Print
+# Print to terminal
 for k in instructors.keys():
     print(k, end=": ")
     sections = instructors[k]
@@ -128,8 +129,7 @@ for k in instructors.keys():
     print("")
     
                     
-# Write teaching schedule
-
+# Write teaching schedule to new workbook
 tsb = openpyxl.Workbook()
 ts = tsb.active
 
@@ -147,7 +147,7 @@ r = 2
 ts.cell(row = r, column = 1,
         value = 'Name')
 ts.cell(row = r, column = 2,
-        value = 'TL [Direct/Reimburse]').alignment = Alignment(wrap_text = True, horizontal = 'center')
+        value = 'Teaching Load, MAE Direct').alignment = Alignment(wrap_text = True, horizontal = 'center')
 
 for ii in range(1,5):
     ts.merge_cells(start_row = r, start_column = 2*ii+1,
@@ -171,8 +171,8 @@ r = 4
 for k in keys:
     ts.cell(row = r, column = 1,
             value = k).alignment = Alignment(vertical = 'center')
-
     c = 3
+    # Starting row for this instructor
     r0 = r
     maxr = r
     sections = instructors[k]
