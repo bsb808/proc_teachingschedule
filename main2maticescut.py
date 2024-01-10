@@ -29,15 +29,18 @@ c_all = list(range(1, source_sheet.max_column + 1))
 c_del = [x for x in c_all if x not in c_keep]
 
 # Rows to keep
-r_keep = list(range(1,7)) + list(range(9,18))
+#r_keep = list(range(1,7)) + list(range(9,18))
+r_keep = [1] + list(range(4,12))
 r_all = list(range(1, source_sheet.max_row +1))
 r_del = [x for x in r_all if x not in r_keep]
 
+for i, r in enumerate(r_del):
+	source_sheet.delete_rows(r-i,1)
+	
 for i, c in enumerate(c_del):
 	source_sheet.delete_cols(c-i,1)
 	
-for i, r in enumerate(r_del):
-	source_sheet.delete_rows(r-i,1)
+
 
 source_workbook.save("test3.xlsx")
 source_workbook.close()
