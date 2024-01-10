@@ -30,7 +30,10 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric):
 
 # Open the excel sheet       
 #planner = '/Users/brianbingham/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
-planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
+#planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
+planner='./MAE_Master_Course_Plan_AY241.xlsx'
+
+
 wb = openpyxl.load_workbook(planner)
 ws = wb.active
 
