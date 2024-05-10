@@ -29,9 +29,9 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric):
             sections.append(s)
 
 # Open the excel sheet       
-#planner = '/Users/brianbingham/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
+planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
 #planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
-planner='./MAE_Master_Course_Plan_AY241.xlsx'
+#planner='./MAE_Master_Course_Plan_AY25.xlsx'
 
 
 wb = openpyxl.load_workbook(planner)
@@ -66,8 +66,8 @@ for c, col_index in zip(dl_row,range(ws.max_column)):
     mdl_row.append(val)
     
 # Specify the four rows for the AY we are interested in.
-fall_row = 9
-summer_row = 12
+fall_row = 13
+summer_row = 16
 
 # Read rows into a list
 rows = []
@@ -110,7 +110,7 @@ for row, qtr in zip(rows, qtrs):
                     if dl_cell.find('DL') > 0:
                         isdl = True
                     is_async = False
-                    if dl_cell.find('Async') > 0:
+                    if dl_cell.find('Self Paced') > 0:
                         is_async = True
                     instructors.setdefault(iname, [])
                     add_section(instructors[iname], qtr, cnum, ctitle,
@@ -150,14 +150,14 @@ r = 2
 ts.cell(row = r, column = 1,
         value = 'Name')
 ts.cell(row = r, column = 2,
-        value = 'Teaching Load, MAE Direct').alignment = Alignment(wrap_text = True, horizontal = 'center')
+        value = 'Teaching Load, MAE Direct*').alignment = Alignment(wrap_text = True, horizontal = 'center')
 
 for ii in range(1,5):
     ts.merge_cells(start_row = r, start_column = 2*ii+1,
                    end_row = r, end_column = 2*ii + 2)
     ts.cell(row = r, column = 2*ii+1, value = qtrs[ii-1]).alignment = Alignment(horizontal = 'center')
 
-ts.cell(row = r, column = 11, value = 'async').alignment = Alignment(horizontal = 'center')
+ts.cell(row = r, column = 11, value = 'DL Self Paced').alignment = Alignment(horizontal = 'center')
 
 
 r = 3
@@ -208,6 +208,9 @@ for k in keys:
     
     r = maxr + 1
 
+# Add a note
+ts.cell(row = maxr+2, column = 1,
+        value = "* Teaching Load, MAE Direct is the number of `segment equivalents` planned in the labor budget.  Typically hybrid (resident+DL concurrenetly) is 1.5 segment equivalents.").alignment = Alignment(wrap_text = False, horizontal = 'left')
 
 # Col width
 ts.row_dimensions[2].height = 30
