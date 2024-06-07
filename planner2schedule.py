@@ -35,7 +35,8 @@ planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
 
 
 wb = openpyxl.load_workbook(planner)
-ws = wb.active
+ws = wb['AY25']
+#ws = wb.active
 
 
 # Determine which sections are DL
