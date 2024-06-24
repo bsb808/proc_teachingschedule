@@ -29,7 +29,8 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric):
             sections.append(s)
 
 # Open the excel sheet       
-planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
+#planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
+planner = '//Downloads/MAE_MasterCoursePlan_AY25.xlsx'
 #planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
 #planner='./MAE_Master_Course_Plan_AY25.xlsx'
 
