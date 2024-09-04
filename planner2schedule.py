@@ -4,13 +4,14 @@ from datetime import datetime
 
 
 class Section:
-    def __init__(self, qtr, number, title, is_dl, is_async):
+    def __init__(self, qtr, number, title, is_dl, is_async, currics, iname):
         self.number = number
         self.title = title
         self.qtr = qtr
         self.is_dl = is_dl
         self.is_async = is_async
-        self.currics = []
+        self.currics = currics
+        self.instructor = iname
 
 def is_in_sections(sections, s):
     '''  Is the sectin in a list of sections? '''
@@ -22,15 +23,15 @@ def is_in_sections(sections, s):
             return True
     return False
 
-def add_section(sections, qtr, number, title, is_dl, is_async, curric):         
+def add_section(sections, qtr, number, title, is_dl, is_async, curric, iname):         
         # Create a section - counts on a sections list at is modified in place
-        s = Section(qtr, number, title, is_dl, is_async)
+        s = Section(qtr, number, title, is_dl, is_async, [], iname)
         if not is_in_sections(sections, s):
             sections.append(s)
 
 # Open the excel sheet       
-#planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
-planner = '//Downloads/MAE_MasterCoursePlan_AY25.xlsx'
+planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
+#planner = '//Downloads/MAE_MasterCoursePlan_AY25.xlsx'
 #planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
 #planner='./MAE_Master_Course_Plan_AY25.xlsx'
 
@@ -82,6 +83,9 @@ for row in ws.iter_rows(
 # Keys are instructor names, values are a list of Sections
 instructors = dict()
 
+# List of all Sections
+section_list = []
+
 qtrs = ['fall', 'winter', 'spring', 'summer']
 
 for row, qtr in zip(rows, qtrs):
@@ -114,9 +118,16 @@ for row, qtr in zip(rows, qtrs):
                     is_async = False
                     if dl_cell.find('Self Paced') > 0:
                         is_async = True
+                    
+                    # Add a section to the instructors dictionary - if not already there.
                     instructors.setdefault(iname, [])
                     add_section(instructors[iname], qtr, cnum, ctitle,
-                                isdl, is_async, [])
+                                isdl, is_async, [], iname)
+                    
+                    # Add section to comprehensive list if not already there
+                    s = Section(qtr, cnum, ctitle, isdl, is_async, [], iname)
+                    if not is_in_sections(section_list, s):
+                        section_list.append(s)
 
 # Print to terminal
 for k in instructors.keys():
@@ -254,5 +265,21 @@ for rr in range(2, r):
 # Save
 datestamp = datetime.now().strftime("%Y%m%d")
 tsb.save('teaching_schedule_%s.xlsx'%datestamp)
+
+
+# Generate a full list Resident classes
+#tlb = openpyxl.Workbook()
+#tl = tlb.active
+
+# Sort list by qtr then numbers
+qorder = ['fall', 'winter', 'spring', 'summer']
+qorder_d = {qtr: index for index, qtr in enumerate(qorder)}
+sorted_sections = sorted(section_list, key=lambda section: (qorder_d[section.qtr], section.number))
+
+for s in sorted_sections:
+    async_str = 'Async' if s.is_async else ''
+    dl_str = 'DL' if s.is_dl else 'RES'
+    print(6*"%s, "%(s.qtr, s.number, s.title, dl_str, async_str, s.instructor))
+
 
         
