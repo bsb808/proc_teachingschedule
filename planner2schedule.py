@@ -1,7 +1,7 @@
 import openpyxl 
 from openpyxl.styles import Border, Side, PatternFill, Font, GradientFill, Alignment
 from datetime import datetime
-
+import os
 
 class Section:
     def __init__(self, qtr, number, title, is_dl, is_async, currics, iname):
@@ -30,7 +30,11 @@ def add_section(sections, qtr, number, title, is_dl, is_async, curric, iname):
             sections.append(s)
 
 # Open the excel sheet       
-planner = '/Users/brianbingham/Downloads/MAE_MasterCoursePlan_AY25.xlsx'
+fname = 'MAE_MasterCoursePlan_AY25.xlsx'
+pdir = '/home/bsb/Downloads'
+#planner = '/Users/brianbingham/Downloads/
+planner = os.path.join(pdir, fname)
+
 #planner = '//Downloads/MAE_MasterCoursePlan_AY25.xlsx'
 #planner='/home/bsb/Downloads/MAE_Master_Course_Plan_AY241.xlsx'
 #planner='./MAE_Master_Course_Plan_AY25.xlsx'
