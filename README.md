@@ -13,7 +13,7 @@ pip install openpyxl
 
 ipython3
 
-run -i main2matices.py
+run -i planner2schedule.py
 
 deactivate
 ```
