@@ -23,8 +23,8 @@ fall_row = 13
 summer_row = 16
 
 # For AY26
-fall_row = 17
-summer_row = 20
+fall_row = 11
+summer_row = 14
 
 ##############################
 
@@ -185,7 +185,16 @@ for ii in range(1,5):
                    end_row = r, end_column = 2*ii + 2)
     ts.cell(row = r, column = 2*ii+1, value = qtrs[ii-1]).alignment = Alignment(horizontal = 'center')
 
-ts.cell(row = r, column = 11, value = 'DL Self Paced').alignment = Alignment(horizontal = 'center')
+# Do we have async sections (correspondence)?
+has_async = False
+for instructor in instructors.keys():
+    sections = instructors[instructor]
+    for s in sections:
+        if s.is_async:
+            has_async = True
+            break
+if has_async:
+    ts.cell(row = r, column = 11, value = 'DL Self Paced').alignment = Alignment(horizontal = 'center')
 
 
 r = 3
@@ -220,13 +229,14 @@ for k in keys:
                     r += 1
             c += 1
     # Then right Async to the right
-    r = r0
-    for s in sections:
-        if s.is_async:
-            ts.cell(row = r, column = c, value = s.number).fill = bg_fill
-            if r > maxr:
-                maxr = r
-            r += 1
+    if has_async:
+        r = r0
+        for s in sections:
+            if s.is_async:
+                ts.cell(row = r, column = c, value = s.number).fill = bg_fill
+                if r > maxr:
+                    maxr = r
+                r += 1
     
     # When instructors have more than one row of classes, merge rows     
     ts.merge_cells(start_row = r0, start_column = 1,
